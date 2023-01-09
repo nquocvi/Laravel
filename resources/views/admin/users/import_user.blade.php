@@ -16,7 +16,7 @@
                                 <ol class="breadcrumb text-right">
                                     <li><a href="#">Dashboard</a></li>
                                     <li><a href="#">User</a></li>
-                                    <li class="active">Import User</li>
+                                    <li class="active">Import</li>
                                 </ol>
                             </div>
                         </div>
@@ -37,6 +37,7 @@
                                    <strong class="card-title">Import User</strong>
                                 </div>
                                 <hr>
+                                @include('admin.alert')
                                 <form action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <br>
@@ -47,7 +48,7 @@
                                             </div>
                                             <div class="col-sm-8">
                                                 <br>
-                                                <button class="btn btn-success ">Import User Data</button>
+                                                <button class="btn btn-success ">Import</button>
                                             </div>
                                         </div>
                                     </div>
@@ -59,41 +60,67 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Bordered Table</strong>
+                                <strong class="card-title">Log Table</strong>
                             </div>
                             <div class="card-body">
                                 <table class="table table-bordered">
                                     <thead>
                                         <tr>
                                             <th scope="col">Time</th>
-                                            <th scope="col">First</th>
-                                            <th scope="col">Last</th>
-                                            <th scope="col">Handle</th>
+                                            <th scope="col">Total</th>
+                                            <th scope="col">Failed</th>
+                                            <th scope="col">Erorr details</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <th scope="row">1</th>
-                                            <td>Mark</td>
-                                            <td>Otto</td>
-                                            <td>@mdo</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td>Jacob</td>
-                                            <td>Thornton</td>
-                                            <td>@fat</td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td colspan="2">Larry the Bird</td>
-                                            <td>@twitter</td>
+                                            <td>
+                                                @if (session()->has('total'))
+                                                    session()->get('total')
+                                                @endif
+                                            </td>
+                                            @if (session()->has('failures'))
+                                                <td>{{ count(session()->get('failures')->all()) }}</td>
+                                            @endif
+                                            <td>----</td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
+                    @if (session()->has('failures'))
+                    <div class="col-lg-12">
+                        <strong class="card-title">Log Detail Table</strong>
+                        <table class="table table-danger">
+                            <tr>
+                                <th>Row</th>
+                                <th>Attribute</th>
+                                <th>Errors</th>
+                                <th>Value</th>
+                            </tr>
+
+                            @foreach (session()->get('failures') as $validation)
+                                <tr>
+                                    <td>{{ $validation->row() }}</td>
+                                    <td>{{ $validation->attribute() }}</td>
+                                    <td>
+                                        <ul>
+                                            @foreach ($validation->errors() as $e)
+                                                <li> {{ $e }} </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        {{ $validation->values()[$validation->attribute()] }}
+                                    </td>
+                                </tr>
+                                
+                            @endforeach
+                        </table>
+                    </div>
+                    @endif
                 </div>
             </div><!-- .animated -->
         </div><!-- .content -->

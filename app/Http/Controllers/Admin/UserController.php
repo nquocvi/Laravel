@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UsersExport;
 use App\Imports\UsersImport;
 
+use function PHPUnit\Framework\countOf;
 
 class UserController extends Controller
 {
@@ -82,12 +83,24 @@ class UserController extends Controller
         ]);
     }
 
-    public function import() 
-    {
+    public function import(Request $request) 
+    {   
+        $file = $request->file('file'); 
         
-        Excel::import(new UsersImport,request()->file('file'));
+        $import = new UsersImport;
+        $import->import($file);
+        
+        
+        //dd($import->failures());
+
+        //$total = $import::beforeImport($import($file));
+
+        if ($import->failures()) {
+            return back()->withFailures($import->failures());
+        }
                
-        return back();
+        Session::flash('success','Excel file imported successfully');
+        // return back()->withTotal('total',$total);
     }
 
     public function export() 
