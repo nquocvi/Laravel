@@ -1,19 +1,6 @@
-<!doctype html>
-<html class="no-js" lang="">
+    @extends('admin.layouts.master')
 
-<head>
-    @include('admin.head')
-</head>
-<body>
-    <!-- Left Panel -->
-    @include('admin.left_panel')
-    <!-- Left Panel -->
-
-    <!-- Right Panel -->
-    <div id="right-panel" class="right-panel">
-        <!-- Header-->
-        @include('admin.right_head')
-        <!-- Header-->
+    @section('breadcrumbs')
         <div class="breadcrumbs">
             <div class="breadcrumbs-inner">
                 <div class="row m-0">
@@ -38,11 +25,11 @@
                 </div>
             </div>
         </div>
+    @endsection
 
+    @section('content')
         <div class="content">
             <div class="animated fadeIn">
-
-
                 <div class="row">
                 <div class="col-lg-12">
                         <div class="card">
@@ -62,7 +49,7 @@
                                             <select name="parent_id" id="select" class="form-control">
                                                 <option value="0"> Select category parent </option>
                                                 @foreach($category as $cate)
-                                                   <option value="{{$cate->id}}">{{$cate->name}}</option>
+                                                <option value="{{$cate->id}}">{{$cate->name}}</option>
                                                 @endforeach
 
                                             </select>
@@ -110,29 +97,14 @@
                     </div>
             </div>
         </div>
-    </div><!-- .content -->
+        </div><!-- .content -->
+    @endsection
 
-    <div class="clearfix"></div>
-
-    <!-- Footer -->
-    @include('admin.right_footer')
-    <!-- /.site-footer -->
-</div><!-- /#right-panel -->
-
-
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
-<script src="/template/assets/js/main.js"></script>
-
-<script>
-    ClassicEditor
-        .create( document.querySelector( '#description-detail' ) )
-        .catch( error => {
-            console.error( error );
-        } );
-</script>
-
+    <script>
+        ClassicEditor
+            .create( document.querySelector( '#description-detail' ) )
+            .catch( error => {
+                console.error( error );
+            } );
+    </script>
 

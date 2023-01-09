@@ -12,17 +12,17 @@ class LoginController extends Controller
 {
     public function index()
     {
-        return View::make('admin.users.login',['title'=>'Login']);
+        return View::make('admin.users.login',['title' => 'Login']);
     }
 
     public function store(Request $request)
     {
-       $this->validate($request, [
+        $this->validate($request, [
             'email' => 'required|email:filter',
             'password' => 'required'
-       ]);
+        ]);
 
-       if (Auth::attempt([
+        if (Auth::attempt([
             'email' => $request->input('email'),
             'password' =>$request->input('password'),
             'role'=> '1'

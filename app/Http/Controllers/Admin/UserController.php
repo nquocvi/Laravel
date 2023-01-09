@@ -15,25 +15,12 @@ class UserController extends Controller
 {
     public function viewUsers(Request $request)
     {
-        //$data = User::all();
-
-
         $userQuery = User::query();
         if ($request->has('search')) {
             $userQuery->where('name', 'like', '%'. $request->get('search'). '%');
         }
         $users = $userQuery->paginate(7);
         
-        // dd($users);
-        // if($request->filled('search')){
-        //     $data = User::where('id', 1)->get();
-        //     //dd(User::find(1)->get());
-        //     //dd(User::search($request->search)->get()->toArray());
-        //     // $data = User::paginate(5);
-        // }else{
-        //     $data = User::paginate(10);
-        // }
-
         return view('admin.users.manage_user',[
             'title' => 'Manage User',
             'users'  => $users
@@ -42,8 +29,8 @@ class UserController extends Controller
 
     public function deleteUser($id)
     {
-        if ($id!='1') {
-            $res=User::where('id',$id)->delete();
+        if ($id != '1') {
+            $res=User::where('id', $id)->delete();
             $data = User::paginate(20);
             return view('admin.users.manage_user',[
                 'title' => 'Manage User',
@@ -87,6 +74,14 @@ class UserController extends Controller
         ]);
     }
 
+    public function importUser() 
+    {
+        
+        return view('admin.users.import_user',[
+            'title' => 'Import User',
+        ]);
+    }
+
     public function import() 
     {
         
@@ -99,4 +94,5 @@ class UserController extends Controller
     {
         return Excel::download(new UsersExport, 'users.xlsx');
     }
+    
 }

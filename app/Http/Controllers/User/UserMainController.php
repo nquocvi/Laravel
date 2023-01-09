@@ -7,10 +7,6 @@ use Illuminate\Http\Request;
 
 class UserMainController extends Controller
 {
-    // public function index()
-    // {
-    //     echo "Hello User";
-    // }
     public function index()
     {
         return view('user.home',[

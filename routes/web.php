@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('delete-user/{id}',[UserController::class,'deleteUser']);
             Route::get('edit-user/{id}',[UserController::class,'viewUser'])->name('viewUser');
             Route::post('edit-user/{id}',[UserController::class,'updateUser']);
+            Route::get('users-import', [UserController::class,'importUser'])->name('users.importUser');
             Route::post('users-import', [UserController::class,'import'])->name('users.import');
             Route::get('users-export', [UserController::class,'export'])->name('users.export');
         });

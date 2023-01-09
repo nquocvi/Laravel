@@ -2,7 +2,7 @@
 <html class="no-js" lang="">
 
 <head>
-    @include('admin.head')
+    @include('admin.partials.styles')
 </head>
 
 <body class="bg-dark">
@@ -45,12 +45,6 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/jquery@2.2.4/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.4/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jquery-match-height@0.7.2/dist/jquery.matchHeight.min.js"></script>
-    <script src="/template/assets/js/main.js"></script>
-
+    @include('admin.partials.scripts')
 </body>
 </html>
