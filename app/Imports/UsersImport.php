@@ -32,14 +32,12 @@ class UsersImport implements
     */
     public function model(array $row)
     {
-        //dd($row);
         return new User([
             'name'     => $row['name'],
             'email'    => $row['email'],
             'phone'     => $row['phone'],
             'address'    => $row['address'],
             'password'    => $row['password'],   
-            // 'password' => Hash::make($row['password']),
 
         ]);
     }

@@ -38,23 +38,6 @@
                                 <strong class="card-title">List User</strong>
                                 </div>
                                 <hr>
-                                {{-- <form action="{{ route('users.import') }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <br>
-                                    <div class="col-sm-12">
-                                        <div class="row">
-                                            <div class="col-sm-8">
-                                                <input type="file" name="file" class="form-control">
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <button class="btn btn-success ">Import User Data</button>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <a class="btn btn-warning float-end" href="{{ route('users.export') }}">Export User Data</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form> --}}
                                 <div class="col-sm-12"> 
                                     <a class="btn btn-success float-end" href="{{ route('users.importUser') }}">Import User Data</a>
                                     <a class="btn btn-warning float-end" href="{{ route('users.export') }}">Export User Data</a>
@@ -126,12 +109,11 @@
                                 <div class="col-sm-5">
                                     <br>
                                     <input type="submit" value="Submit" name="submit">
-                                    {{-- <a class="btn btn-danger float-end" href="">Delete User Data</a> --}}
                                 </div>
-                            </div> <!-- /.table-stats -->
+                            </div> 
                         </div>
                     </div>
                 </div>
-            </div><!-- .animated -->
-        </div><!-- .content -->
+            </div>
+        </div>
     @endsection

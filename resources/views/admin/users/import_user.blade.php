@@ -123,6 +123,6 @@
                     </div>
                     @endif
                 </div>
-            </div><!-- .animated -->
-        </div><!-- .content -->
+            </div>
+        </div>
     @endsection

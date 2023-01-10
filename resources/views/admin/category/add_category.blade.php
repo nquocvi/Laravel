@@ -97,7 +97,7 @@
                     </div>
             </div>
         </div>
-        </div><!-- .content -->
+        </div>
     @endsection
 
     <script>

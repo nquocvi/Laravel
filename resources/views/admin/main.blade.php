@@ -724,7 +724,6 @@
                         show: false
                     }
                 });
-                // Bar Chart #flotBarChart End
             });
         </script>
     @endsection

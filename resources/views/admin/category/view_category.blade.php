@@ -41,7 +41,6 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Name</th>
-                                            <!-- <th>Description</th> -->
                                             <th>Status</th>
                                             <th>Manage</th>
                                         </tr>
@@ -51,10 +50,8 @@
                                         <tr>
                                             <td class="serial">{{$category->id}}</td>
                                             <td>  <span class="name">{{$category->name}}</span> </td>
-                                            <!-- <td> <span class="product">{{$category->description}}</span> </td> -->
                                             <td><span class="count">{{$category->active == '1' ? 'Active':"Inactive"}}</span></td>
                                             <td>
-                                                
                                                 <a  href="#">
                                                     <span class="ti-pencil-alt"></span> Edit</span>
                                                 </a>
@@ -67,11 +64,11 @@
                                     @endforeach
                                     </tbody>
                                 </table>
-                            </div> <!-- /.table-stats -->
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div><!-- .animated -->
-        </div><!-- .content -->
+            </div>
+        </div>
     @endsection
 
