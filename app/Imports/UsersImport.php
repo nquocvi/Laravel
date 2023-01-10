@@ -11,10 +11,10 @@ use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Events\BeforeImport;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
-use Maatwebsite\Excel\Events\AfterImport;
+
+
 
 class UsersImport implements 
     ToModel, 
@@ -52,22 +52,6 @@ class UsersImport implements
         ];
     }
 
-    // public function registerEvents(): array
-    // {
-    //     return [
-    //         BeforeImport::class => function(BeforeImport $event) {
-    //             $totalRows = $event->getReader()->getTotalRows();
-    //             if (!empty($totalRows)) {
-    //               // dd ($totalRows['Worksheet']);
-    //                //dd     ($totalRows);
-    //             }
-    //         },
-    //     ];
-    // }
 
-    // public function beforeImport(BeforeImport $event)
-    // {
-    //     return ( $event->getReader()->getTotalRows());
-    // }
 
 }

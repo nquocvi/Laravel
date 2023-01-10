@@ -40,6 +40,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('users-import', [UserController::class,'importUser'])->name('users.importUser');
             Route::post('users-import', [UserController::class,'import'])->name('users.import');
             Route::get('users-export', [UserController::class,'export'])->name('users.export');
+            Route::get('users-import-detail/{id}',[UserController::class,'detailImport']);
         });
 
     });

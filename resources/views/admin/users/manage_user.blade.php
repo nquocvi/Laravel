@@ -111,10 +111,10 @@
                                             <td> <span class="product">0{{ $user['phone'] }}</span> </td>
                                             <td><span class="count">{{ $user['role']=='1' ? 'Admin':"User" }}</span></td>
                                             <td>
-                                                <a  href="/admin/users/edit-user/{{$user['id']}}">
+                                                <a  href="/admin/users/edit-user/{{ $user['id'] }}">
                                                     <span class="badge badge-complete">Edit</span> 
                                                 </a>
-                                                <a  href="/admin/users/delete-user/{{$user['id']}}">
+                                                <a  href="/admin/users/delete-user/{{ $user['id'] }}">
                                                     <span class="badge badge-pending" >Delete</span>
                                                 </a>
                                             </td>

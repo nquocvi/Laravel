@@ -44,7 +44,7 @@
                                     <div class="col-sm-12">
                                         <div class="row">
                                             <div class="col-sm-8">
-                                                <input type="file" name="file" class="form-control">
+                                                <input type="file" name="file" class="form-control" id ="file-input">
                                             </div>
                                             <div class="col-sm-8">
                                                 <br>
@@ -73,20 +73,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @foreach($failures as $failure)
                                         <tr>
-                                            <th scope="row">1</th>
+                                            <th scope="row">{{ $failure['created_at'] }}</th>
+                                            <td>{{ $failure['total'] }}</td>
+                                            <td>{{ $failure['failed'] }}</td>
                                             <td>
-                                                @if (session()->has('total'))
-                                                    session()->get('total')
-                                                @endif
+                                                <a  href="/admin/users/users-import-detail/{{ $failure['id'] }}">
+                                                {{ $failure['detail_failures'] }}
+                                                </a>
                                             </td>
-                                            @if (session()->has('failures'))
-                                                <td>{{ count(session()->get('failures')->all()) }}</td>
-                                            @endif
-                                            <td>----</td>
                                         </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
+                                {!! $failures->withQueryString()->links('pagination::bootstrap-5') !!}
                             </div>
                         </div>
                     </div>
@@ -101,7 +102,7 @@
                                 <th>Value</th>
                             </tr>
 
-                            @foreach (session()->get('failures') as $validation)
+                            @foreach (session()->get('failures')['fail'] as $validation)
                                 <tr>
                                     <td>{{ $validation->row() }}</td>
                                     <td>{{ $validation->attribute() }}</td>
