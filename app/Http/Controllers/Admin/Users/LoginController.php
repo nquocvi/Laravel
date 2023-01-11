@@ -25,13 +25,13 @@ class LoginController extends Controller
         if (Auth::attempt([
             'email' => $request->input('email'),
             'password' =>$request->input('password'),
-            'role'=> '1'
+            'role'=> config('global.admin_role')
             ], $request->input('remember'))) {
             return redirect()->route('admin');
         } elseif (Auth::attempt([
             'email' => $request->input('email'),
             'password' =>$request->input('password'),
-            'role'=> '0'
+            'role'=> config('global.user_role')
             ], $request->input('remember'))) {
             return redirect()->route('user');
         } else {

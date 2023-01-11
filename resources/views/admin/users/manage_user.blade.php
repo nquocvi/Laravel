@@ -66,50 +66,53 @@
                                 </div>
                                 <hr>
                             </div>
-                            <div class="table-stats order-table ov-h">
-                                <table class="table table-striped table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Select User</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Phone</th>
-                                            <th>Role</th>
-                                            <th>Manage</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($users as $user)
-                                        <tr>
-                                            <td>
-                                                <form method="post" action="">
+                            <div class="table-stats order-table ov-h col-sm-12">
+                                <form method="post" action="/admin/users/multipleusersdelete">
+                                @csrf
+                                    
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Email</th>
+                                                <th>Phone</th>
+                                                <th>Role</th>
+                                                <th>Manage</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($users as $user)
+                                            <tr>
+                                                <td>
                                                     <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input"  name="users[]" id="{{ $user['id'] }}" >
+                                                        <input type="checkbox" class="custom-control-input"  name="users[]" id="{{ $user['id'] }}" value="{{ $user['id'] }}>" >
                                                         <label class="custom-control-label" for="{{ $user['id'] }}">{{ $user['id'] }}</label>
                                                     </div>
-                                                </form>
-                                            </td>
-                                            <td>  <span class="name">{{ $user['name'] }}</span> </td>
-                                            <td> <span class="product">{{ $user['email'] }}</span> </td>
-                                            <td> <span class="product">0{{ $user['phone'] }}</span> </td>
-                                            <td><span class="count">{{ $user['role']=='1' ? 'Admin':"User" }}</span></td>
-                                            <td>
-                                                <a  href="/admin/users/edit-user/{{ $user['id'] }}">
-                                                    <span class="badge badge-complete">Edit</span> 
-                                                </a>
-                                                <a  href="/admin/users/delete-user/{{ $user['id'] }}">
-                                                    <span class="badge badge-pending" >Delete</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                                </td>
+                                                <td>  <span class="name">{{ $user['name'] }}</span> </td>
+                                                <td> <span class="product">{{ $user['email'] }}</span> </td>
+                                                <td> <span class="product">0{{ $user['phone'] }}</span> </td>
+                                                <td><span class="count">{{ $user['role']=='1' ? 'Admin':"User" }}</span></td>
+                                                <td>
+                                                    <a  href="/admin/users/edit-user/{{ $user['id'] }}">
+                                                        <span class="badge badge-complete">Edit</span> 
+                                                    </a>
+                                                    <a  href="/admin/users/delete-user/{{ $user['id'] }}">
+                                                        <span class="badge badge-pending" >Delete</span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                    <div class="col-sm-12"> 
+                                        <input class="btn btn-danger" type="submit" name="submit" value="Delete Users"/>
+                                        <input class="btn btn-primary" type="submit" name="submit" value="Export Selected"/>
+                                    </div>
+                                    
+                                </form>
                                 {!! $users->withQueryString()->links('pagination::bootstrap-5') !!}
-                                <div class="col-sm-5">
-                                    <br>
-                                    <input type="submit" value="Submit" name="submit">
-                                </div>
                             </div> 
                         </div>
                     </div>

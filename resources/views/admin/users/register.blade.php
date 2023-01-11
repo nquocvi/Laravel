@@ -2,7 +2,7 @@
 <html class="no-js" lang="">
 
 <head>
-    @include('admin.head')
+    @include('admin.partials.styles')
 </head>
 
 <body class="bg-dark">

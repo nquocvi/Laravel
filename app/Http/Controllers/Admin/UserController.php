@@ -14,15 +14,10 @@ use App\Models\FailuresDetail;
 
 class UserController extends Controller
 {
-    public function viewUsers(Request $request)
+    public function viewUsers()
     {
-        $userQuery = User::query();
-        if ($request->has('search')) {
-            $userQuery->where('name', 'like', '%'. $request->get('search'). '%');
-        }
+        $users = User::paginate(config('global.pagination_records'));
 
-        $users = $userQuery->paginate(10);
-        
         return view('admin.users.manage_user',[
             'title' => 'Manage User',
             'users'  => $users
@@ -33,14 +28,15 @@ class UserController extends Controller
     {
         if ($id != '1') {
             User::where('id', $id)->delete();
-            $data = User::paginate(10);
+            $data = User::paginate(config('global.pagination_records'));
+
             return view('admin.users.manage_user',[
                 'title' => 'Manage User',
                 'users'  => $data
             ]);
         }
 
-        $data = User::all();
+        $data = User::paginate(config('global.pagination_records'));
 
         return view('admin.users.manage_user',[
             'title' => 'Manage User',
@@ -48,7 +44,24 @@ class UserController extends Controller
         ]);
     }
 
-    public function viewUser($id, Request $request)
+    public function deleteMultipleUsers(Request $request)
+    {
+
+        $id = $request->get('users');
+
+        foreach ($id as $user) 
+		{
+			 User::where('id', (int) $user)->delete();
+		}
+        $data = User::paginate(config('global.pagination_records'));
+
+        return view('admin.users.manage_user',[
+            'title' => 'Manage User',
+            'users'  => $data
+        ]);
+    }
+
+    public function viewUser($id)
     {
         $user = User::find($id);
 
@@ -77,7 +90,7 @@ class UserController extends Controller
 
     public function importUser() 
     {
-        $failures = Failures::paginate(10)->withQueryString();
+        $failures = Failures::paginate(config('global.pagination_records'));
 
         return view('admin.users.import_user',[
             'title' => 'Import User',
@@ -145,7 +158,7 @@ class UserController extends Controller
 
     public function detailImport($id) 
     {
-        $failures = FailuresDetail::where('failures_id', '=', $id)->paginate(10);
+        $failures = FailuresDetail::where('failures_id', '=', $id)->paginate(config('global.pagination_records'));
         return view('admin.users.import_detail',[
             'title' => 'Detail Import',
             'failures' => $failures
@@ -156,5 +169,7 @@ class UserController extends Controller
     {
         return Excel::download(new UsersExport, 'users.xlsx');
     }
+
+
     
 }
