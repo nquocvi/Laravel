@@ -25,7 +25,7 @@ class CategoryController extends Controller
 
     public function store(CreateFormRequest $request)
     {
-        $result = $this->categoryService->create($request);
+        $this->categoryService->create($request);
         return redirect()->back();
     }
 

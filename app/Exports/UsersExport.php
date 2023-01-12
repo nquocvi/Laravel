@@ -3,18 +3,30 @@
 namespace App\Exports;
 
 use App\Models\User;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class UsersExport implements FromCollection, WithHeadings
+class UsersExport implements FromQuery, WithHeadings
 {
-    /**
-    * @return \Illuminate\Support\Collection
-    */
-    public function collection()
+    use Exportable;
+
+    private $id;
+
+    public function __construct(array  $id = null)
     {
-        //return User::all();
-        return User::select("id", "name", "email","phone","address")->get();
+        $this->id = $id;
+    }
+
+    public function query()
+    {
+        $select =  User::select("id", "name", "email","phone","address");
+
+        if($this->id){
+            $select = $select->whereIn('id', $this->id);
+        }
+
+        return $select;
     }
 
     public function headings(): array

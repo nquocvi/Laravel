@@ -21,7 +21,6 @@ class CategoryService
     public function create($request)
     {
        try {
-            // $data = $request->input();
             Category::create([
                 'name' => (string) $request->input('name'),
                 'parent_id' => (string) $request->input('parent_id'),
@@ -31,11 +30,11 @@ class CategoryService
             ]);
 
             Session::flash('success','Successful');
+
+            return true;
        } catch (\Exception $err) {
             Session::flash('error',$err->getMessage());
             return false;
        }
-
-       return true;
     }
 }

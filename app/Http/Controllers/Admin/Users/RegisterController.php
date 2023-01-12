@@ -27,7 +27,7 @@ class RegisterController extends Controller
             'confirmPassword' =>'required|same:password'
         ]);
         
-        $user = User::create(request(['name', 'email', 'password','phone','address']));
+        User::create(request(['name', 'email', 'password','phone','address']));
         
         Session::flash('success','Successful');
         

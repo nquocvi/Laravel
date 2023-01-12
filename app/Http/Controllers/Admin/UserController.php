@@ -11,54 +11,79 @@ use App\Exports\UsersExport;
 use App\Imports\UsersImport;
 use App\Models\Failures;
 use App\Models\FailuresDetail;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    public function viewUsers()
+    public function viewUsers(Request $request)
     {
-        $users = User::paginate(config('global.pagination_records'));
+        $users = User::all();
+
+        if ($request->has('search-name') && $request->get('search-name') != null) {
+            $users = User::where('name', 'like', '%'. $request->get('search-name'). '%')->get();
+        }
+        
+        if ($request->has('search-email') && $request->get('search-email') != null) {
+            $users = User::where('email', 'like', '%'. $request->get('search-email'). '%')->get();
+        }
+
+        if ($request->has('role') && $request->get('role') != 'select') {
+            $users = User::where('role', '=', (int) $request->get('role'))->get();
+        }
 
         return view('admin.users.manage_user',[
             'title' => 'Manage User',
             'users'  => $users
         ]);
+        
     }
 
     public function deleteUser($id)
     {
-        if ($id != '1') {
+        if ($id != config('global.admin_role')) {
+
             User::where('id', $id)->delete();
-            $data = User::paginate(config('global.pagination_records'));
-
-            return view('admin.users.manage_user',[
-                'title' => 'Manage User',
-                'users'  => $data
-            ]);
+            
+            Session::flash('success','Deleted!');
+            return back();
         }
-
-        $data = User::paginate(config('global.pagination_records'));
-
-        return view('admin.users.manage_user',[
-            'title' => 'Manage User',
-            'users'  => $data
-        ]);
+        
+        Session::flash('error','You can not delete admin');
+        return back();
     }
 
     public function deleteMultipleUsers(Request $request)
     {
+        if($request->get('users') != null){
+            $id = $request->get('users');
 
-        $id = $request->get('users');
-
-        foreach ($id as $user) 
-		{
-			 User::where('id', (int) $user)->delete();
-		}
-        $data = User::paginate(config('global.pagination_records'));
-
-        return view('admin.users.manage_user',[
-            'title' => 'Manage User',
-            'users'  => $data
-        ]);
+            switch ($request->input('action')) {
+    
+                case 'Delete Selected':
+                    foreach ($id as $user) 
+                    {
+                        if ((int) $user != config('global.admin_role')) {
+                            User::where('id', (int) $user)->delete();
+                        }else{
+                            Session::flash('error','You can not delete admin');
+                            Log::channel('daily')->info('You can not delete admin');
+                            return back();
+                        }
+                    }
+                    Session::flash('success','Deleted!');
+                    return back();
+                    break;
+        
+                case 'Export Selected':
+    
+                    $usersExport = new UsersExport($id);
+                    return Excel::download($usersExport, 'users.xlsx');
+                    break;
+            }
+        }else{
+            Session::flash('error','Select user please!');
+            return back();
+        }
     }
 
     public function viewUser($id)
@@ -80,8 +105,8 @@ class UserController extends Controller
         $user->save();
 
         $user = User::find($id);
+
         Session::flash('success','Successful update!');
-        
         return view('admin.users.edit_user',[
             'title' => 'Edit User',
             'user' => $user
@@ -102,6 +127,7 @@ class UserController extends Controller
     {   
         if (count($request->all()) == 1) {
             Session::flash('error','Select file please!');
+
             return back();
         }else{
             $failed = 0;
@@ -114,7 +140,11 @@ class UserController extends Controller
             $total = count($import->toArray($file)[0]);
 
             if ($import->failures()->isNotEmpty()) {
+
                 $failed = count($import->failures());
+                Session::flash('warning',"Import: ".$total."---- Failed: ".$failed);
+                Log::channel('daily')->info($import->failures());
+
                 if($failed > 0) {
                     $description = 'view detail';
                 }
@@ -159,17 +189,11 @@ class UserController extends Controller
     public function detailImport($id) 
     {
         $failures = FailuresDetail::where('failures_id', '=', $id)->paginate(config('global.pagination_records'));
+
         return view('admin.users.import_detail',[
             'title' => 'Detail Import',
             'failures' => $failures
         ]);
     }
-
-    public function export() 
-    {
-        return Excel::download(new UsersExport, 'users.xlsx');
-    }
-
-
     
 }
