@@ -3,52 +3,74 @@
 namespace App\Imports;
 
 use App\Models\User;
+use Exception;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\SkipsErrors;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
-use Maatwebsite\Excel\Concerns\SkipsOnError;
-use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Concerns\RegistersEventListeners;
-
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class UsersImport implements 
     ToModel, 
     WithHeadingRow, 
-    SkipsOnError, 
-    WithValidation,
-    SkipsOnFailure,
-    WithEvents
+    ShouldQueue,
+    WithChunkReading
 {
-    use Importable, SkipsErrors, SkipsFailures, RegistersEventListeners;
+    use Importable;
         /**
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-    public function model(array $row)
+
+    private $errors;
+    private $row = 1;
+
+    public function __construct($errors = [])
     {
-        return new User([
+        $this->errors = $errors;
+    }
+
+     public function model(array $row)
+    {
+        try {
+            User::create([
             'name'     => $row['name'],
             'email'    => $row['email'],
             'phone'     => $row['phone'],
             'address'    => $row['address'],
             'password'    => $row['password'],   
+            ]);
 
-        ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::debug($e);
+        }
     }
 
-    public function rules(): array
+
+
+    public function startRow(): int
     {
-        return [
-            '*.email' => ['email', 'required','unique:users,email'],
-            '*.password' => ['required', 'min:3']
-        ];
+        return 2;
     }
+
+
+    public function chunkSize(): int
+    {
+        return 1000;
+    }
+
+    public function batchSize(): int
+    {
+        return 1000;
+    }
+
+
 
 
 

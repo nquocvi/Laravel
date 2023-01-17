@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('edit-user/{id}',[UserController::class,'viewUser'])->name('viewUser');
             Route::post('edit-user/{id}',[UserController::class,'updateUser']);
             Route::get('users-import', [UserController::class,'importUser'])->name('users.importUser');
-            Route::post('users-import', [UserController::class,'import'])->name('users.import');
+            Route::post('users-import', [UserController::class,'importCSV'])->name('users.import');
             Route::get('users-export', [UserController::class,'export'])->name('users.export');
             Route::get('users-import-detail/{id}',[UserController::class,'detailImport']);
             Route::post('multipleusersdelete', [UserController::class,'deleteMultipleUsers']);

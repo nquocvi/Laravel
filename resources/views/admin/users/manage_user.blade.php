@@ -119,7 +119,8 @@
                                 </div>
                                 <hr>
                                 <div class="col-sm-12"> 
-                                    <a class="btn btn-secondary float-end float-right" href="{{ route('users.importUser') }}">Import User Data</a>
+                                    <a class="btn btn-secondary float-end " href="{{ route('users.importUser') }}">Import User Data</a>
+                                    <a class="btn btn-secondary float-end " href="{{ route('users.export') }}">Export User Data</a>
                                 </div>
                             </div>
                             <div class="table-stats order-table ov-h col-sm-12 table table-bordered">
