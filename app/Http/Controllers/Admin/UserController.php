@@ -153,7 +153,6 @@ class UserController extends Controller
 
                 Session::flash('warning',"Import: ".$total."---- Failed: ".$failed);
                
-                
                 $log = new Failures();
                 $log->total = $total;
                 $log->failed = $failed;
@@ -166,12 +165,14 @@ class UserController extends Controller
                     $errors[$key] = $key;
                     $col = '';
 
-                    if(key($error->failed()) == 1){
-                        $col = 'email';
-                    }
                     if(key($error->failed()) == 0){
                         $col = 'name';
                     }
+
+                    if(key($error->failed()) == 1){
+                        $col = 'email';
+                    }
+                    
                     if(key($error->failed()) == 2){
                          $col = 'password';
                     }
@@ -202,50 +203,83 @@ class UserController extends Controller
                 Session::flash('success','Excel file imported successfully');
                 return back()->withTotal($total);  
             }
-
-
         }
         
     }
 
     public function importCSV(Request $request) 
     {   
-        
+        $timeStart = microtime(true);
         if (count($request->all()) == 1) {
             Session::flash('error','Select file please!');
-
             return back();
         }else{
-
             $data = array_map('str_getcsv', file($request->file('file')));
             $header = $data[0];
             unset($data[0]);
-            $logs= [];
-            $users= [];
+            $total = count($data);
+            $logs = [];
+            $users = [];
             $list = User::all()->toArray();
-
-            foreach ($data as $value){
+            $i = 1;
+            
+            foreach ($data as $value) {
                 $userData = array_combine($header, $value);
-               
-                if ($this->checkData($userData, $list)) {
+
+                $check = $this->checkData($userData, $list, $i);
+
+                if (count($check['log']) < 1) {
                     array_push($users, $userData);
                 } else {
-                    array_push($logs,"err");
+                    array_push($logs,$check);
                 }
-                
+                $i++;
             }
-        
-            if (count($logs) > 0){
-                Session::flash('warning'," Failed: ".count($logs));
 
+            if (count($logs) > 0) {
+                $failures = new Failures();
+                $failures->total = $total;
+                $failures->failed = count($logs);
+                $failures->detail_failures = 'view detail';
+                $failures->save();
+                
+                
+                foreach( $logs as $log) {
+                    $value = [];
+                    foreach(array_keys($log['log']) as $key) {
+                        array_push($value,$log['data'][$key]);
+                    }
+                    
+
+                    $failures_detail = new FailuresDetail();
+                    $failures_detail->line = $log['row'];
+                    $failures_detail->attribute = implode(" ", array_keys($log['log']));
+                    $failures_detail->erorr = implode(" --- ", $log['log']); 
+                    $failures_detail->failures_id = $failures->id;
+                    $failures_detail->value = implode(" --- ", $value);
+                    $failures_detail->save();
+
+                    Log::channel('daily')->info($failures_detail);
+                }
+                $sec = number_format((float)microtime(true) - $timeStart, 2, '.', '');
+                Session::flash('warning','Import: '.$total. '---- Failed: '.count($logs).' in '.$sec.'s');
                 return back();
             }else{
-                $break_data = array_chunk($users, 1000, true);
+                $break_data = array_chunk($users, config('global.chunk'), true);
+
                 foreach ($break_data as $data) {
                    User::insert($data);
                 }
-                Session::flash('success','Excel file imported successfully');
+                
+                $log = new Failures();
+                $log->total = $total;
+                $log->failed = count($logs);
+                $log->detail_failures = '';
+                $log->save();
 
+                $sec = number_format((float)microtime(true) - $timeStart, 2, '.', '');
+                
+                Session::flash('success','Excel file imported '.$total. ' rows successfully'." in ".$sec."s");
                 return back()->withTotal(count($users));  
             }
         }
@@ -261,29 +295,31 @@ class UserController extends Controller
         ]);
     }
 
-    function checkData($data, $list,)
+    function checkData($data, $list, $row)
     {
         $logs = [];
+        $result = [];
 
-        if (strlen($data['name']) < 5) {
-            array_push($logs,"Name too short");
-        }if (strlen($data['password']) < 5) {
-            array_push($logs,"Password too short");
+        if (strlen($data['name']) < config('global.name_length')) {
+            $logs['name'] = 'name too short';
+        }if (strlen($data['password']) < config('global.password_length')) {
+            $logs['password'] = 'password too short';
         }
 
         foreach($list as $l){
             if($l['name'] == $data['name']){
-                array_push($logs,"Name already taken");
+                $logs['name'] = 'name already taken';
             }
             if($l['email'] == $data['email']) {
-                array_push($logs,"Email already taken");
+                $logs['email'] = 'email already taken';
             }
         }
 
-        if(count($logs) < 1){
-            return true;
-        }
-        return false;
+        $result['row'] = $row;
+        $result['log'] = $logs;
+        $result['data'] = $data;
+
+        return $result;
        
     }
     
