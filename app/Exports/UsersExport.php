@@ -25,7 +25,6 @@ class UsersExport implements FromQuery, WithHeadings
         if($this->id){
             $select = $select->whereIn('id', $this->id);
         }
-
         return $select;
     }
 

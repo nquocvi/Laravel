@@ -33,12 +33,12 @@ Route::middleware(['auth'])->group(function () {
 
         Route::prefix('users')->group(function () {
             Route::get('logout',[LogoutController::class,'index']);
-            Route::get('manage',[UserController::class,'viewUsers'])->name('viewUsers');
+            Route::get('manage',[UserController::class,'getUsers'])->name('getUsers');
             Route::get('delete-user/{id}',[UserController::class,'deleteUser']);
-            Route::get('edit-user/{id}',[UserController::class,'viewUser'])->name('viewUser');
+            Route::get('edit-user/{id}',[UserController::class,'getUser'])->name('getUser');
             Route::post('edit-user/{id}',[UserController::class,'updateUser']);
             Route::get('users-import', [UserController::class,'importUser'])->name('users.importUser');
-            Route::post('users-import', [UserController::class,'importCSV'])->name('users.import');
+            Route::post('users-import', [UserController::class,'importCsvBatch'])->name('users.import');
             Route::get('users-export', [UserController::class,'export'])->name('users.export');
             Route::get('users-import-detail/{id}',[UserController::class,'detailImport']);
             Route::post('multipleusersdelete', [UserController::class,'deleteMultipleUsers']);
