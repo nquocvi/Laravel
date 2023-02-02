@@ -9,6 +9,8 @@ use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Bus;
+use App\Jobs\ImportCsv;
 
 class UserService 
 {
@@ -66,11 +68,13 @@ class UserService
                     }
                     Session::flash('success','Deleted!');
                     break;
+                    return true;  
         
                 case 'Export Selected':
                     $ids = array_map('intval', $id);
                     $usersExport = new UsersExport($ids);
                     return Excel::download($usersExport, 'users.xlsx');
+                    break;
             }
         }else{
             Session::flash('error','Select user please!');
@@ -96,7 +100,6 @@ class UserService
         $failures = Failures::paginate(config('global.pagination_records'));
         return $failures;
     }
-
 
     public function importCsv($request) 
     {   
@@ -167,6 +170,19 @@ class UserService
                 
                 Session::flash('success','Excel file imported '.$total. ' rows successfully'." in ".$sec."s");
             }
+        }
+    }
+
+    public function importCsvBatch($request) 
+    {   
+        if (count($request->all()) == 1) {
+            Session::flash('error','Select file please!');
+        }else{
+            $data = array_map('str_getcsv', file($request->file('file')));
+            $header = $data[0];
+            unset($data[0]);
+            $batch  = Bus::batch([])->name('ImportCsv')->dispatch();
+            $batch->add(new ImportCsv($data, $header));
         }
     }
     

@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Services\Admin;
+
+use App\Models\Category;
+use Illuminate\Support\Facades\Session;
+
+class CategoryService 
+{
+
+    public function getParent()
+    {
+        return Category::where('parent_id', 0)->get();
+    }
+
+    public function getCategories()
+    {
+        return Category::all();
+    }
+
+    public function create($request)
+    {
+       try {
+            Category::create([
+                'name' => (string) $request->input('name'),
+                'parent_id' => (string) $request->input('parent_id'),
+                'description' => (string) $request->input('description'),
+                'content' => (string) $request->input('description-detail'),
+                'active' => (string) $request->input('active'),
+            ]);
+
+            Session::flash('success','Successful');
+
+            return true;
+       } catch (\Exception $err) {
+            Session::flash('error',$err->getMessage());
+            return false;
+       }
+    }
+}

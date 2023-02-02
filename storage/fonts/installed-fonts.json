@@ -1,0 +1,18 @@
+{
+    "ipaexg": {
+        "normal": "D:\\training\\nqvi\\example-app\\vendor\\dompdf\\dompdf\/lib\/fonts\/ipaexg",
+        "bold": "D:\\training\\nqvi\\example-app\\vendor\\dompdf\\dompdf\/lib\/fonts\/ipaexg",
+        "italic": "D:\\training\\nqvi\\example-app\\vendor\\dompdf\\dompdf\/lib\/fonts\/ipaexg",
+        "bold_italic": "D:\\training\\nqvi\\example-app\\vendor\\dompdf\\dompdf\/lib\/fonts\/ipaexg"
+    },
+    "ipaexm": {
+        "normal": "D:\\training\\nqvi\\example-app\\vendor\\dompdf\\dompdf\/lib\/fonts\/ipaexm",
+        "bold": "D:\\training\\nqvi\\example-app\\vendor\\dompdf\\dompdf\/lib\/fonts\/ipaexm",
+        "italic": "D:\\training\\nqvi\\example-app\\vendor\\dompdf\\dompdf\/lib\/fonts\/ipaexm",
+        "bold_italic": "D:\\training\\nqvi\\example-app\\vendor\\dompdf\\dompdf\/lib\/fonts\/ipaexm",
+        "300": "ipaexm_300_46ac028cd9a37383ac22972a2ead6001"
+    },
+    "ipaexm1": {
+        "300": "ipaexm1_300_46ac028cd9a37383ac22972a2ead6001"
+    }
+}

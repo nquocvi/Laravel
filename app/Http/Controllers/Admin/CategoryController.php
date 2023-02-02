@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CreateFormRequest;
-use App\Http\Services\Category\CategoryService;
+use App\Http\Services\Admin\CategoryService;
 
 class CategoryController extends Controller
 {

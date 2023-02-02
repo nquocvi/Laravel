@@ -119,13 +119,29 @@
                                 </div>
                                 <hr>
                                 <div class="col-sm-12"> 
-                                    <a class="btn btn-secondary float-end " href="{{ route('users.importUser') }}">Import User Data</a>
-                                    <a class="btn btn-secondary float-end " href="{{ route('users.export') }}">Export User Data</a>
+                                    <?php $ids = [] ?>
+                                    @foreach($users as $user)
+                                        <?php array_push($ids, $user['id']) ?>
+                                    @endforeach
+                                    <?php $userId = urlencode(base64_encode(json_encode($ids))) ?>
+                                    <form method='POST' action="users-export-search" style ='float: right; margin-left: 10px '>
+                                        @csrf
+                                        <input type="hidden" name="uid" value= {{ $userId }} />
+                                        <input class="btn btn-primary" type="submit" name="action" value="Export Excel"/>
+                                    </form>
+                                    <form method='GET' action="generate-pdf" style ='float: right; margin-left: 10px'>
+                                        @csrf
+                                        <input type="hidden" name="uid" value= {{ $userId }} />
+                                        <input class="btn btn-primary" type="submit" name="action" value="Export PDF"/>
+                                    </form>
+                                    <a class="btn btn-primary" href="{{ route('users.export') }}" style ='float: right; margin-left: 10px'>Export All User Data</a>  
+                                    <a class="btn btn-secondary" href="{{ route('users.importUser') }} "style ='float: right;'>Import User Data</a>
+                  
                                 </div>
                             </div>
                             <div class="table-stats order-table ov-h col-sm-12 table table-bordered">
                                 @include('admin.alert')
-                                <form method="post" action="/admin/users/multipleusersdelete">
+                                <form method="post" action="/admin/users/multipleusersdelete" >
                                 @csrf
                                 <br>
                                     <div class="col-sm-3">
@@ -163,10 +179,10 @@
                                                         <label class="custom-control-label" for="{{ $user['id'] }}">{{ $user['id'] }}</label>
                                                     </div>
                                                 </td>
-                                                <td>  <span class="name">{{ $user['name'] }}</span> </td>
+                                                <td> <span class="name">{{ $user['name'] }}</span> </td>
                                                 <td> <span class="product">{{ $user['email'] }}</span> </td>
                                                 <td> <span class="product">0{{ $user['phone'] }}</span> </td>
-                                                <td><span class="count">{{ $user['role']=='1' ? 'Admin':"User" }}</span></td>
+                                                <td> <span class="count">{{ $user['role']=='1' ? 'Admin':"User" }}</span> </td>
                                                 <td>
                                                     <a  href="/admin/users/edit-user/{{ $user['id'] }}">
                                                         <span class="badge badge-complete">Edit</span> 
@@ -179,30 +195,29 @@
                                         @endforeach
                                         </tbody>
                                     </table>
-                                    <br>
                                     <div class="col-sm-12"> 
+                                        <nav aria-label="Page navigation example">
+                                            <ul class="pagination">
+                                                <li data-page="prev" class="page-item" >
+                                                    <span>
+                                                        < 
+                                                        <span class="sr-only">(current)</span>
+                                                    </span>
+                                                </li>
+                                                <li data-page="next" id="prev" class="page-item">
+                                                    <span>
+                                                        > 
+                                                        <span class="sr-only">(current)</span>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    <div class="col-sm-12" > 
                                         <input class="btn btn-danger" type="submit" name="action" value="Delete Selected"/>
                                         <input class="btn btn-primary" type="submit" name="action" value="Export Selected"/>
                                     </div>
                                 </form>
-                                <div class="col-sm-12"> 
-                                    <nav aria-label="Page navigation example">
-                                        <ul class="pagination">
-                                            <li data-page="prev" class="page-item" >
-                                                <span>
-                                                    < 
-                                                    <span class="sr-only">(current)</span>
-                                                </span>
-                                            </li>
-                                            <li data-page="next" id="prev" class="page-item">
-                                                <span>
-                                                    > 
-                                                    <span class="sr-only">(current)</span>
-                                                </span>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
                             </div> 
                         </div>
                     </div>
