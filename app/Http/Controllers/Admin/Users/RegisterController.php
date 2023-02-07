@@ -12,7 +12,7 @@ class RegisterController extends Controller
     public function index()
     {
        return view('admin.users.register', [
-        'title' =>'Register'
+        'title' => 'Register'
        ]);
     }
 
@@ -21,16 +21,14 @@ class RegisterController extends Controller
         $this->validate($request, [
             'name' => 'required|string|max:255|unique:users,name',
             'email' => 'required|email|unique:users,email',
-            'phone' =>'required',
-            'address' =>'required',
+            'phone' => 'required',
+            'address' => 'required',
             'password' => 'required|min:3',
-            'confirmPassword' =>'required|same:password'
+            'confirmPassword' => 'required|same:password'
         ]);
         
-        User::create(request(['name', 'email', 'password','phone','address']));
-        
-        Session::flash('success','Successful');
-        
-        return redirect()->to('admin/users/login');
+        User::create(request(['name', 'email', 'password', 'phone', 'address']));    
+        Session::flash('success', 'Successful');
+        return view('admin/users/login');
     }
 }

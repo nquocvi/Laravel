@@ -24,9 +24,8 @@ class PDFController extends Controller
             'date' => date('m/d/Y'),
             'users' => $users
         ]; 
-            
+             
         $pdf = PDF::loadView('admin.users.exportPdf', $data);
-     
         return $pdf->download('users.pdf');
     }
 }

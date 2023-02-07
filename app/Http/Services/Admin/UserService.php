@@ -5,8 +5,6 @@ namespace App\Http\Services\Admin;
 use App\Models\User;
 use App\Models\Failures;
 use App\Models\FailuresDetail;
-use App\Exports\UsersExport;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Bus;
@@ -44,40 +42,8 @@ class UserService
         if ($id != config('global.admin_role')) {
             User::where('id', $id)->delete(); 
             Session::flash('success','Deleted!');
-        }else{ 
+        } else { 
             Session::flash('error','You can not delete admin');
-        }
-    }
-
-    public function handleMultipleUsers($request)
-    {
-        if($request->get('users') != null){
-            $id = $request->get('users');
-
-            switch ($request->input('action')) {
-    
-                case 'Delete Selected':
-                    foreach ($id as $user) 
-                    {
-                        if ((int) $user != config('global.admin_role')) {
-                            User::where('id', (int) $user)->delete();
-                        }else{
-                            Session::flash('error','You can not delete admin');
-                            Log::channel('daily')->info('You can not delete admin');
-                        }
-                    }
-                    Session::flash('success','Deleted!');
-                    break;
-                    return true;  
-        
-                case 'Export Selected':
-                    $ids = array_map('intval', $id);
-                    $usersExport = new UsersExport($ids);
-                    return Excel::download($usersExport, 'users.xlsx');
-                    break;
-            }
-        }else{
-            Session::flash('error','Select user please!');
         }
     }
 
@@ -106,7 +72,7 @@ class UserService
         $timeStart = microtime(true);
         if (count($request->all()) == 1) {
             Session::flash('error','Select file please!');
-        }else{
+        } else {
             $data = array_map('str_getcsv', file($request->file('file')));
             $header = $data[0];
             unset($data[0]);
@@ -118,9 +84,7 @@ class UserService
             
             foreach ($data as $value) {
                 $userData = array_combine($header, $value);
-
                 $check = $this->checkData($userData, $list, $i);
-
                 if (count($check['log']) < 1) {
                     array_push($users, $userData);
                 } else {
@@ -136,24 +100,25 @@ class UserService
                 $failures->detail_failures = 'view detail';
                 $failures->save();
                 
-                foreach( $logs as $log) {
+                foreach ($logs as $log) {
                     $value = [];
-                    foreach(array_keys($log['log']) as $key) {
+                    foreach (array_keys($log['log']) as $key) {
                         array_push($value,$log['data'][$key]);
-                    }                
-                    $failures_detail = new FailuresDetail();
-                    $failures_detail->line = $log['row'];
-                    $failures_detail->attribute = implode(" ", array_keys($log['log']));
-                    $failures_detail->erorr = implode(" --- ", $log['log']); 
-                    $failures_detail->failures_id = $failures->id;
-                    $failures_detail->value = implode(" --- ", $value);
-                    $failures_detail->save();
+                    }
 
-                    Log::channel('daily')->info($failures_detail);
+                    $failuresDetail = new FailuresDetail();
+                    $failuresDetail->line = $log['row'];
+                    $failuresDetail->attribute = implode(" ", array_keys($log['log']));
+                    $failuresDetail->erorr = implode(" --- ", $log['log']); 
+                    $failuresDetail->failures_id = $failures->id;
+                    $failuresDetail->value = implode(" --- ", $value);
+                    $failuresDetail->save();
+
+                    Log::channel('daily')->info($failuresDetail);
                 }
                 $sec = number_format((float)microtime(true) - $timeStart, 2, '.', '');
                 Session::flash('warning','Import: '.$total. '---- Failed: '.count($logs).' in '.$sec.'s');
-            }else{
+            } else {
                 $break_data = array_chunk($users, config('global.chunk'), true);
 
                 foreach ($break_data as $data) {
@@ -167,7 +132,6 @@ class UserService
                 $log->save();
 
                 $sec = number_format((float)microtime(true) - $timeStart, 2, '.', '');
-                
                 Session::flash('success','Excel file imported '.$total. ' rows successfully'." in ".$sec."s");
             }
         }
@@ -204,12 +168,14 @@ class UserService
             $logs['password'] = 'password too short';
         }
 
-        foreach($list as $l){
-            if($l['name'] == $data['name']){
+        foreach ($list as $l) {
+            if($l['name'] == $data['name']) {
                 $logs['name'] = 'name already taken';
+                break;
             }
             if($l['email'] == $data['email']) {
                 $logs['email'] = 'email already taken';
+                break;
             }
         }
 
@@ -218,8 +184,5 @@ class UserService
         $result['data'] = $data;
 
         return $result;
-       
     }
-
-
 }

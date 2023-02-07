@@ -17,7 +17,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return view('admin.category.add_category',[
+        return view('admin.category.add_category', [
             'title' => 'Add category',
             'category' => $this->categoryService->getParent()
         ]);
@@ -31,7 +31,7 @@ class CategoryController extends Controller
 
     public function viewCategories()
     {
-        return view('admin.category.view_category',[
+        return view('admin.category.view_category', [
             'title' => 'List category',
             'categories' => $this->categoryService->getCategories()
         ]);

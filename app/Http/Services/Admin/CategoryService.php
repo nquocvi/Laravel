@@ -28,9 +28,8 @@ class CategoryService
                 'content' => (string) $request->input('description-detail'),
                 'active' => (string) $request->input('active'),
             ]);
-
+            
             Session::flash('success','Successful');
-
             return true;
        } catch (\Exception $err) {
             Session::flash('error',$err->getMessage());

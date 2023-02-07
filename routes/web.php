@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\MainController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\User\UserMainController;
 use App\Http\Controllers\Admin\PDFController;
+use App\Http\Controllers\QrCodeController;
+
 
 
 Route::get('/', function () {
@@ -19,6 +21,9 @@ Route::get('admin/users/login', [LoginController::class, 'index'])->name('login'
 Route::post('admin/users/login/store', [LoginController::class, 'store']);
 Route::get('/admin/users/register', [RegisterController::class, 'index']);
 Route::get('/admin/users/register/store', [RegisterController::class, 'store']);
+
+Route::get('/qrcode', [QrCodeController::class, 'index']);
+Route::get('/getqrcode', [QrCodeController::class, 'read']);
 
 Route::middleware(['auth'])->group(function () {
     
@@ -44,7 +49,8 @@ Route::middleware(['auth'])->group(function () {
             Route::get('users-import-detail/{id}',[UserController::class,'detailImport']);
             Route::post('multipleusersdelete', [UserController::class,'deleteMultipleUsers']);
             Route::post('users-export-search', [UserController::class,'exportSearch']);
-            Route::get('generate-pdf', [PDFController::class, 'generatePDF']);
+            Route::post('generate-pdf', [PDFController::class, 'generatePDF']);
+            Route::get('delete-users',[UserController::class,'deleteUsers'])->name('users.deleteUsers');
         });
 
     });

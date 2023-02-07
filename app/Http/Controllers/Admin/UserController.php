@@ -22,15 +22,15 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-        return view('admin.users.manage_user',[
-            'title' => 'Manage User',
+        return view('admin.users.manage_user', [
+            'title' => 'ユーザーの管理',
             'users'  => $this->userService->getUsers($request),
         ]); 
     }
 
     public function getUser($id)
     {
-        return view('admin.users.edit_user',[
+        return view('admin.users.edit_user', [
             'title' => 'Edit User',
             'user' => $this->userService->getUser($id),
         ]);
@@ -42,34 +42,45 @@ class UserController extends Controller
         return back();
     }
 
+    public function deleteUsers()
+    {
+        $users = User::all();
+        foreach ($users as $user) {
+            if ((int) $user->id != config('global.admin_role')) {
+                User::where('id', $user->id)->delete();
+                Session::flash('success','Deleted!');
+            } 
+        }
+
+        return back();
+    }
+
     public function deleteMultipleUsers(Request $request)
     {
-        if($request->get('users') != null){
+        if ($request->get('users') != null) {
+
             $id = $request->get('users');
 
             switch ($request->input('action')) {
-    
-                case 'Delete Selected':
-                    foreach ($id as $user) 
-                    {
+                case 'delete':
+                    foreach ($id as $user) {
                         if ((int) $user != config('global.admin_role')) {
                             User::where('id', (int) $user)->delete();
-                        }else{
+                            Session::flash('success','Deleted!');
+                        } else {
                             Session::flash('error','You can not delete admin');
                             Log::channel('daily')->info('You can not delete admin');
                         }
                     }
-                    Session::flash('success','Deleted!');
                     break;
-
-                case 'Export Selected':
+                case 'export':
                     $ids = array_map('intval', $id);
                     $usersExport = new UsersExport($ids);
                     return Excel::download($usersExport, 'users.xlsx');
                     break;
             }
             return back();
-        }else{
+        } else {
             Session::flash('error','Select user please!');
             return back();
         }
@@ -78,7 +89,7 @@ class UserController extends Controller
 
     public function updateUser($id, Request $request)
     {
-        return view('admin.users.edit_user',[
+        return view('admin.users.edit_user', [
             'title' => 'Edit User',
             'user' => $this->userService->updateUser($id, $request),
         ]);
@@ -86,7 +97,7 @@ class UserController extends Controller
 
     public function importUser() 
     {
-        return view('admin.users.import_user',[
+        return view('admin.users.import_user', [
             'title' => 'Import User',
             'failures' => $this->userService->importUser(),
         ]);
@@ -115,12 +126,11 @@ class UserController extends Controller
     {   
         $this->userService->importCsvBatch($request);
         return back();
-
     }
 
     public function detailImport($id) 
     {
-        return view('admin.users.import_detail',[
+        return view('admin.users.import_detail', [
             'title' => 'Detail Import',
             'failures' =>  $this->userService->detailImport($id),
         ]);
